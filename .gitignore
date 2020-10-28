@@ -7,3 +7,6 @@
 /target
 settings.json
 dependency-reduced-pom.xml
+/.gradle
+/gradle
+/build
