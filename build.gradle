@@ -5,22 +5,24 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id "io.freefair.lombok" version "5.2.1"
+    id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
 repositories {
     mavenLocal()
+    mavenCentral()
+
+
     maven {
         url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
     }
-
     maven {
         url = uri('https://ci.ender.zone/plugin/repository/everything/')
     }
-
     maven {
         url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
     }
-
     maven {
         url = uri('https://repo.maven.apache.org/maven2')
     }
@@ -33,6 +35,21 @@ repositories {
         url = "https://maven.pkg.github.com/DumbDogDiner/buildtoolspackages/" }
 
 
+    /*maven {
+        credentials {
+            username "$ghUser"
+            password "$ghPass"
+        }
+        url = "https://maven.pkg.github.com/DumbDogDiner/StickyAPI/" }*/
+
+    /*maven {
+        credentials {
+            username "$ghUser"
+            password "$ghPass"
+        }
+        url = "https://maven.pkg.github.com/DumbDogDiner/StickyCommands/" }*/
+    flatDir {dirs "E:\\DDD_DEV\\StickyCommands\\build\\libs"}
+
 }
 
 dependencies {
@@ -40,11 +57,31 @@ dependencies {
     compileOnly 'net.ess3:EssentialsX:2.17.0'
     compileOnly 'me.clip:placeholderapi:2.10.4'
     compileOnly 'org.jetbrains:annotations:20.0.0'
+    compileOnly 'com.dumbdogdiner.buildtools:spigot:1.16.3-SNAPSHOT'
+    //implementation "com.dumbdogdiner:stickyapi:1.4.5"
+    compileOnly "com.dumbdogdiner:stickycommands:3.0.1"
 }
 
 group = 'xyz.nkomarn'
-version = '1.6.2'
-sourceCompatibility = '1.8'
+version = '1.6.2-DDD'
+sourceCompatibility = '1.11'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+tasks.build.dependsOn tasks.shadowJar
+shadowJar {
+    archiveClassifier.set("")
+    project.configurations.implementation.canBeResolved = true
+    configurations = [project.configurations.implementation]
+}
+
+task sources(type: Jar, dependsOn: classes) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
+
 
 publishing {
     publications {

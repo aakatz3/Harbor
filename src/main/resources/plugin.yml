@@ -3,11 +3,12 @@ description: "Harbor redefines how sleep works in your server, making it easier 
 main: "xyz.nkomarn.harbor.Harbor"
 author: "TechToolbox (@nkomarn)"
 website: "https://nkomarn.xyz"
-version: "1.6.2"
-api-version: "1.14"
+version: "1.6.2-DDD"
+api-version: "1.16"
 
 softdepend:
   - "Essentials"
+  - "StickyCommands"
 
 commands:
   harbor:

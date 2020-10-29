@@ -1,7 +1,10 @@
 package xyz.nkomarn.harbor.util;
 
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.bukkit.entity.Player;
@@ -18,6 +21,7 @@ import xyz.nkomarn.harbor.Harbor;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class PlayerManager implements Listener {
 
@@ -69,8 +73,14 @@ public class PlayerManager implements Listener {
             return false;
         }
 
+        Optional<StickyCommands> stickyCommands = harbor.getStickyCommands();
         Optional<Essentials> essentials = harbor.getEssentials();
-        if (essentials.isPresent()) {
+
+        if(stickyCommands.isPresent()){
+            boolean isAFK = stickyCommands.get().getOnlineUser(player.getUniqueId()).isAfk();
+            System.out.println("Stickycommands afk check - " + player.getDisplayName() + " - " + isAFK);
+            return isAFK;
+        } else if (essentials.isPresent()) {
             User user = essentials.get().getUser(player);
 
             if (user != null) {

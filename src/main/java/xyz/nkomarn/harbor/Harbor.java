@@ -1,9 +1,11 @@
 package xyz.nkomarn.harbor;
 
+import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.earth2me.essentials.Essentials;
 import org.bukkit.World;
 import org.bukkit.boss.BossBar;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +29,7 @@ public class Harbor extends JavaPlugin {
     private Messages messages;
     private PlayerManager playerManager;
     private Essentials essentials;
+    private StickyCommands stickyCommands;
 
     public void onEnable() {
         PluginManager pluginManager = getServer().getPluginManager();
@@ -36,6 +39,7 @@ public class Harbor extends JavaPlugin {
         messages = new Messages(this);
         playerManager = new PlayerManager(this);
         essentials = (Essentials) pluginManager.getPlugin("Essentials");
+        stickyCommands = (StickyCommands) pluginManager.getPlugin("StickyCommands");
 
         Arrays.asList(
                 messages,
@@ -47,8 +51,8 @@ public class Harbor extends JavaPlugin {
         getCommand("harbor").setExecutor(new HarborCommand(this));
         getCommand("forceskip").setExecutor(new ForceSkipCommand(this));
 
-        if (essentials == null) {
-            getLogger().info("Essentials not present- registering fallback AFK detection system.");
+        if (essentials == null && stickyCommands == null) {
+            getLogger().info("Essentials and StickyCommands are not present- registering fallback AFK detection system.");
             playerManager.registerFallbackListeners();
         }
 
@@ -96,5 +100,10 @@ public class Harbor extends JavaPlugin {
     @NotNull
     public Optional<Essentials> getEssentials() {
         return Optional.ofNullable(essentials);
+    }
+
+    @NotNull
+    public Optional<StickyCommands> getStickyCommands(){
+       return Optional.ofNullable(stickyCommands);
     }
 }
