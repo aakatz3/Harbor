@@ -1,14 +1,15 @@
 package xyz.nkomarn.harbor;
 
 import com.dumbdogdiner.stickycommands.StickyCommands;
+
 import com.earth2me.essentials.Essentials;
+
 import org.bukkit.World;
-import org.bukkit.boss.BossBar;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
@@ -103,7 +104,7 @@ public class Harbor extends JavaPlugin {
     }
 
     @NotNull
-    public Optional<StickyCommands> getStickyCommands(){
-       return Optional.ofNullable(stickyCommands);
+    public Optional<StickyCommands> getStickyCommands() {
+        return Optional.ofNullable(stickyCommands);
     }
 }

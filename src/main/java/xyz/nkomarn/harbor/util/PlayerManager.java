@@ -4,7 +4,6 @@ import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongMap;
 import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.bukkit.entity.Player;
@@ -21,7 +20,6 @@ import xyz.nkomarn.harbor.Harbor;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class PlayerManager implements Listener {
 
