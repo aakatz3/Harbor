@@ -77,9 +77,7 @@ public class PlayerManager implements Listener {
         Optional<Essentials> essentials = harbor.getEssentials();
 
         if(stickyCommands.isPresent()){
-            boolean isAFK = stickyCommands.get().getOnlineUser(player.getUniqueId()).isAfk();
-            System.out.println("Stickycommands afk check - " + player.getDisplayName() + " - " + isAFK);
-            return isAFK;
+            return stickyCommands.get().getOnlineUser(player.getUniqueId()).isAfk();
         } else if (essentials.isPresent()) {
             User user = essentials.get().getUser(player);
 

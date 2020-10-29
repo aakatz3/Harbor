@@ -129,7 +129,6 @@ public class Checker extends BukkitRunnable {
     public boolean isVanished(@NotNull Player player) {
         for (MetadataValue meta : player.getMetadata("vanished")) {
             if (meta.asBoolean()) {
-                System.out.println("Player " + player.getDisplayName() + " is vanished");
                 return true;
             }
         }
