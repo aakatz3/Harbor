@@ -42,13 +42,13 @@ repositories {
         }
         url = "https://maven.pkg.github.com/DumbDogDiner/StickyAPI/" }*/
 
-    /*maven {
+    maven {
         credentials {
             username "$ghUser"
             password "$ghPass"
         }
-        url = "https://maven.pkg.github.com/DumbDogDiner/StickyCommands/" }*/
-    flatDir {dirs "E:\\DDD_DEV\\StickyCommands\\build\\libs"}
+        url = "https://maven.pkg.github.com/DumbDogDiner/StickyCommands/" }
+    //flatDir {dirs "E:\\DDD_DEV\\StickyCommands\\build\\libs"}
 
 }
 
@@ -58,8 +58,8 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.4'
     compileOnly 'org.jetbrains:annotations:20.0.0'
     compileOnly 'com.dumbdogdiner.buildtools:spigot:1.16.3-SNAPSHOT'
-    //implementation "com.dumbdogdiner:stickyapi:1.4.5"
-    compileOnly "com.dumbdogdiner:stickycommands:3.0.1"
+
+    compileOnly "com.dumbdogdiner:stickycommands:3.1.4"
 }
 
 group = 'xyz.nkomarn'
