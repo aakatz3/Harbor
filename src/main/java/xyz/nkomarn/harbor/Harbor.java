@@ -9,11 +9,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.jetbrains.annotations.NotNull;
-
 import xyz.nkomarn.harbor.command.ForceSkipCommand;
 import xyz.nkomarn.harbor.command.HarborCommand;
 import xyz.nkomarn.harbor.listener.BedListener;
-import xyz.nkomarn.harbor.listener.PlayerListener;
 import xyz.nkomarn.harbor.task.Checker;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
@@ -45,8 +43,7 @@ public class Harbor extends JavaPlugin {
         Arrays.asList(
                 messages,
                 playerManager,
-                new BedListener(this),
-                new PlayerListener(this)
+                new BedListener(this)
         ).forEach(listener -> pluginManager.registerEvents(listener, this));
 
         getCommand("harbor").setExecutor(new HarborCommand(this));
@@ -59,10 +56,6 @@ public class Harbor extends JavaPlugin {
 
         if (config.getBoolean("metrics")) {
             new Metrics(this);
-        }
-
-        if (!config.getString("version").equals("1.6.2")) {
-            getLogger().warning("Your Harbor configuration is outdated- please regenerate your config or Harbor may not work properly!");
         }
     }
 
