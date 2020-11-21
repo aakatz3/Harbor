@@ -4,8 +4,6 @@ import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongMap;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
