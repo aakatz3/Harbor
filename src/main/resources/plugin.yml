@@ -3,35 +3,27 @@ description: "Harbor redefines how sleep works in your server, making it easier 
 main: "xyz.nkomarn.harbor.Harbor"
 author: "TechToolbox (@nkomarn)"
 website: "https://nkomarn.xyz"
-<<<<<<< HEAD
-version: "1.6.3-DDD"
+version: "1.6.4-DDD"
 api-version: "1.16"
 
 softdepend:
-  - "Essentials"
-  - "StickyCommands"
-=======
-version: "1.6.4-SNAPSHOT"
-api-version: "1.14"
-
-softdepend:
-  - "Essentials"
-  - "PlaceholderAPI"
->>>>>>> upstream/master
+    - "Essentials"
+    - "StickyCommands"
+    - "PlaceholderAPI"
 
 commands:
-  harbor:
-    description: "Base command for Harbor."
-    usage: "/harbor <subcommand>"
-  forceskip:
-    description: "Allows players to accelerate the night of their current world."
-    permission: "harbor.forceskip"
+    harbor:
+        description: "Base command for Harbor."
+        usage: "/harbor <subcommand>"
+    forceskip:
+        description: "Allows players to accelerate the night of their current world."
+        permission: "harbor.forceskip"
 
 permissions:
-  harbor.admin:
-    default: op
-  harbor.forceskip:
-    description: "Permits usage of the /forceskip command."
-    default: op
-  harbor.ignored:
-    default: false
+    harbor.admin:
+        default: op
+    harbor.forceskip:
+        description: "Permits usage of the /forceskip command."
+        default: op
+    harbor.ignored:
+        default: false
