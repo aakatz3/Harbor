@@ -4,8 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import org.bukkit.entity.Pose;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -84,8 +86,11 @@ public class Checker extends BukkitRunnable {
             }
 
             if (config.getBoolean("night-skip.instant-skip")) {
-                messages.sendRandomChatMessage(world, "messages.chat.night-skipped");
-                Bukkit.getScheduler().runTask(harbor, () -> world.setTime(config.getInteger("night-skip.daytime-ticks")));
+                Bukkit.getScheduler().runTask(harbor, () -> {
+                    world.setTime(config.getInteger("night-skip.daytime-ticks"));
+                    clearWeather(world);
+                    resetStatus(world);
+                });
                 return;
             }
 
@@ -155,7 +160,7 @@ public class Checker extends BukkitRunnable {
     @NotNull
     public List<Player> getSleepingPlayers(@NotNull World world) {
         return world.getPlayers().stream()
-                .filter(Player::isSleeping)
+                .filter(player -> player.getPose() == Pose.SLEEPING)
                 .collect(toList());
     }
 
@@ -211,13 +216,14 @@ public class Checker extends BukkitRunnable {
         boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator", false) && player.getGameMode() == GameMode.SPECTATOR;
         boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
         boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
+        boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
 
         return excludedByAdventure
                 || excludedByCreative
                 || excludedBySpectator
                 || excludedByPermission
                 || excludedByVanish
-                || harbor.getPlayerManager().isAfk(player);
+                || excludedByAfk;
     }
 
     /**
@@ -246,6 +252,54 @@ public class Checker extends BukkitRunnable {
      * @param world The world for which to reset status.
      */
     public void resetStatus(@NotNull World world) {
-        skippingWorlds.remove(world.getUID());
+        wakeUpPlayers(world);
+        harbor.getServer().getScheduler().runTaskLater(harbor, () -> {
+            skippingWorlds.remove(world.getUID());
+            harbor.getPlayerManager().clearCooldowns();
+            harbor.getMessages().sendRandomChatMessage(world, "messages.chat.night-skipped");
+        }, 20L);
+    }
+
+    /**
+     * Kicks all sleeping players out of bed in the provided world.
+     *
+     * @param world The world for which to kick players out of bed.
+     */
+    public void wakeUpPlayers(@NotNull World world) {
+        ensureMain(() -> world.getPlayers().stream()
+                .filter(LivingEntity::isSleeping)
+                .forEach(player -> player.wakeup(true)));
+    }
+
+    /**
+     * Resets the weather states in the provided world.
+     *
+     * @param world The world for which to clear weather.
+     */
+    public void clearWeather(@NotNull World world) {
+        ensureMain(() -> {
+            Config config = harbor.getConfiguration();
+
+            if (world.hasStorm() && config.getBoolean("night-skip.clear-rain")) {
+                world.setStorm(false);
+            }
+
+            if (world.isThundering() && config.getBoolean("night-skip.clear-thunder")) {
+                world.setThundering(false);
+            }
+        });
+    }
+
+    /**
+     * Ensures the provided task is ran on the server thread.
+     *
+     * @param runnable The task to run on the server thread.
+     */
+    public void ensureMain(@NotNull Runnable runnable) {
+        if (!Bukkit.isPrimaryThread()) {
+            Bukkit.getScheduler().runTask(harbor, runnable);
+        } else {
+            runnable.run();
+        }
     }
 }

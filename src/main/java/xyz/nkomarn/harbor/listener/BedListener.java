@@ -8,6 +8,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.util.Messages;
 import xyz.nkomarn.harbor.util.PlayerManager;
 
 import java.util.concurrent.TimeUnit;
@@ -15,10 +16,12 @@ import java.util.concurrent.TimeUnit;
 public class BedListener implements Listener {
 
     private final Harbor harbor;
+    private final Messages messages;
     private final PlayerManager playerManager;
 
     public BedListener(@NotNull Harbor harbor) {
         this.harbor = harbor;
+        this.messages = harbor.getMessages();
         this.playerManager = harbor.getPlayerManager();
     }
 
@@ -35,9 +38,9 @@ public class BedListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(player, System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-sleeping")
-                    .replace("[player]", event.getPlayer().getName())
-                    .replace("[displayname]", event.getPlayer().getDisplayName()));
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
+                    player, harbor.getConfiguration().getString("messages.chat.player-sleeping"))
+            );
         }, 1);
     }
 
@@ -49,9 +52,9 @@ public class BedListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(event.getPlayer(), System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), harbor.getConfiguration().getString("messages.chat.player-left-bed")
-                    .replace("[player]", event.getPlayer().getName())
-                    .replace("[displayname]", event.getPlayer().getDisplayName()));
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
+                    event.getPlayer(), harbor.getConfiguration().getString("messages.chat.player-left-bed"))
+            );
         }, 1);
     }
 
