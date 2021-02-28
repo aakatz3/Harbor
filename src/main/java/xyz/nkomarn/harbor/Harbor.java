@@ -1,9 +1,8 @@
 package xyz.nkomarn.harbor;
 
-import com.dumbdogdiner.stickycommands.StickyCommands;
-
 import com.earth2me.essentials.Essentials;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,7 +27,6 @@ public class Harbor extends JavaPlugin {
     private Messages messages;
     private PlayerManager playerManager;
     private Essentials essentials;
-    private StickyCommands stickyCommands;
 
     public void onEnable() {
         PluginManager pluginManager = getServer().getPluginManager();
@@ -38,19 +36,15 @@ public class Harbor extends JavaPlugin {
         messages = new Messages(this);
         playerManager = new PlayerManager(this);
         essentials = (Essentials) pluginManager.getPlugin("Essentials");
-        stickyCommands = (StickyCommands) pluginManager.getPlugin("StickyCommands");
 
-        Arrays.asList(
-                messages,
-                playerManager,
-                new BedListener(this)
-        ).forEach(listener -> pluginManager.registerEvents(listener, this));
+        Arrays.asList(messages, playerManager, new BedListener(this))
+                .forEach(listener -> pluginManager.registerEvents(listener, this));
 
         getCommand("harbor").setExecutor(new HarborCommand(this));
         getCommand("forceskip").setExecutor(new ForceSkipCommand(this));
 
-        if (essentials == null && stickyCommands == null) {
-            getLogger().info("Essentials and StickyCommands are not present- registering fallback AFK detection system.");
+        if (essentials == null || getServer().getPluginManager().getPlugin("StickyCommands") == null) {
+            getLogger().info("Essentials or StickyCommands is not present- registering fallback AFK detection system.");
             playerManager.registerFallbackListeners();
         }
 
@@ -96,8 +90,4 @@ public class Harbor extends JavaPlugin {
         return Optional.ofNullable(essentials);
     }
 
-    @NotNull
-    public Optional<StickyCommands> getStickyCommands() {
-        return Optional.ofNullable(stickyCommands);
-    }
 }

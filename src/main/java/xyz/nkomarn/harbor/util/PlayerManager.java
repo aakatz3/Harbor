@@ -1,9 +1,9 @@
 package xyz.nkomarn.harbor.util;
 
-import com.dumbdogdiner.stickycommands.StickyCommands;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,11 +71,10 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        Optional<StickyCommands> stickyCommands = harbor.getStickyCommands();
         Optional<Essentials> essentials = harbor.getEssentials();
 
-        if(stickyCommands.isPresent()){
-            return stickyCommands.get().getOnlineUser(player.getUniqueId()).isAfk();
+        if (Bukkit.getServer().getPluginManager().getPlugin("StickyCommands") != null) {
+            return player.hasMetadata("stickycommands_afk");
         } else if (essentials.isPresent()) {
             User user = essentials.get().getUser(player);
 
@@ -88,7 +87,8 @@ public class PlayerManager implements Listener {
             return false;
         }
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - playerActivity.get(player.getUniqueId()));
+        long minutes = TimeUnit.MILLISECONDS
+                .toMinutes(System.currentTimeMillis() - playerActivity.get(player.getUniqueId()));
         return minutes >= harbor.getConfiguration().getInteger("afk-detection.timeout");
     }
 
@@ -102,7 +102,8 @@ public class PlayerManager implements Listener {
     }
 
     /**
-     * Registers Harbor's fallback listeners for AFK detection if Essentials is not present.
+     * Registers Harbor's fallback listeners for AFK detection if Essentials is not
+     * present.
      */
     public void registerFallbackListeners() {
         harbor.getServer().getPluginManager().registerEvents(new AfkListeners(), harbor);

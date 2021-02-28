@@ -38,9 +38,8 @@ public class BedListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(player, System.currentTimeMillis());
-            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
-                    player, harbor.getConfiguration().getString("messages.chat.player-sleeping"))
-            );
+            harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(player,
+                    harbor.getConfiguration().getString("messages.chat.player-sleeping")));
         }, 1);
     }
 
@@ -53,13 +52,13 @@ public class BedListener implements Listener {
         Bukkit.getScheduler().runTaskLater(harbor, () -> {
             playerManager.setCooldown(event.getPlayer(), System.currentTimeMillis());
             harbor.getMessages().sendWorldChatMessage(event.getBed().getWorld(), messages.prepareMessage(
-                    event.getPlayer(), harbor.getConfiguration().getString("messages.chat.player-left-bed"))
-            );
+                    event.getPlayer(), harbor.getConfiguration().getString("messages.chat.player-left-bed")));
         }, 1);
     }
 
     /**
-     * Checks if a message should be silenced from chat (i.e. if the player is under cooldown).
+     * Checks if a message should be silenced from chat (i.e. if the player is under
+     * cooldown).
      *
      * @param player The player context.
      * @return Whether the message should be silenced.
@@ -74,6 +73,7 @@ public class BedListener implements Listener {
         }
 
         int cooldown = harbor.getConfiguration().getInteger("messages.chat.message-cooldown");
-        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) < cooldown;
+        return TimeUnit.MILLISECONDS
+                .toSeconds(System.currentTimeMillis() - playerManager.getCooldown(player)) < cooldown;
     }
 }
