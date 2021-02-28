@@ -39,7 +39,7 @@ dependencies {
 }
 
 group = 'xyz.nkomarn'
-version = '1.6.3-DDD'
+version = '1.6.4-DDD'
 sourceCompatibility = '1.11'
 
 tasks.withType(JavaCompile) {
