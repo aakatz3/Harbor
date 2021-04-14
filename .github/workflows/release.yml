@@ -1,9 +1,8 @@
-name: release
+name: Release
+
 on:
   release:
-    types:
-      - created
-      - published
+    types: [published, created, edited, prereleased]
 
 jobs:
   release:
