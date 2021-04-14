@@ -4,7 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>xyz.nkomarn</groupId>
     <artifactId>Harbor</artifactId>
-    <version>1.6.4-SNAPSHOT</version>
+    <!-- This version is only used in local builds, and CI runnings. Release builds to packages will have the tagged version automatically set this. -->
+    <version>1.6.x-SNAPSHOT-DEV</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -59,6 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -72,6 +74,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -82,5 +85,11 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

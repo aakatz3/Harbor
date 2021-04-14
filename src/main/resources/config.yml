@@ -68,7 +68,6 @@ messages:
     unrecognized-command: "Unrecognized command."
 
 # Spooky internal controls
-version: 1.6.3
 interval: 1
 metrics: true
 debug: false
