@@ -29,7 +29,7 @@ jobs:
           path: target/Harbor-*.jar
       - name: Upload Package
         run: |
-          mvn --batch-mode deploy --file pom.xml -DpackagesUrl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
+          mvn --batch-mode -x deploy --file pom.xml -DpackagesUrl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release
