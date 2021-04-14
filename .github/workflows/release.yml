@@ -29,7 +29,7 @@ jobs:
           path: target/Harbor-*.jar
       - name: Upload Package
         run: |
-          mvn --batch-mode deploy --file pom.xml -Durl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
+          mvn --batch-mode deploy --file pom.xml -Durl=https://maven.pkg.github.com/${GITHUB_REPOSITORY} -DrepositoryId=github
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
