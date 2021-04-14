@@ -1,17 +1,17 @@
 package xyz.nkomarn.harbor.task;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
 import org.bukkit.entity.Pose;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import xyz.nkomarn.harbor.Harbor;
+import xyz.nkomarn.harbor.api.ExclusionProvider;
+import xyz.nkomarn.harbor.provider.GameModeExclusionProvider;
 import xyz.nkomarn.harbor.util.Config;
 import xyz.nkomarn.harbor.util.Messages;
 
@@ -23,15 +23,32 @@ import java.util.UUID;
 import static java.util.stream.Collectors.toList;
 
 public class Checker extends BukkitRunnable {
-
+    private final Set<ExclusionProvider> providers;
     private final Harbor harbor;
     private final Set<UUID> skippingWorlds;
 
     public Checker(@NotNull Harbor harbor) {
         this.harbor = harbor;
         this.skippingWorlds = new HashSet<>();
+        this.providers = new HashSet<>();
 
-        runTaskTimerAsynchronously(harbor, 0L, harbor.getConfiguration().getInteger("interval") * 20);
+        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
+
+
+        if(exclusions != null) {
+            // Add inbuilt exclusions
+            providers.add(new GameModeExclusionProvider());
+            if(exclusions.getBoolean("ignored-permission", false))
+                providers.add(player -> player.hasPermission("harbor.ignored"));
+            // Example using a method reference
+            if(exclusions.getBoolean("exclude-vanished", false))
+                providers.add(Checker::isVanished);
+            // Example using a lambda
+            if(exclusions.getBoolean("exclude-afk", false))
+                providers.add(player -> harbor.getPlayerManager().isAfk(player));
+        }
+
+        runTaskTimerAsynchronously(harbor, 0L, harbor.getConfiguration().getInteger("interval") * 20L);
     }
 
     @Override
@@ -131,14 +148,8 @@ public class Checker extends BukkitRunnable {
      * @param player The player to check.
      * @return Whether the provided player is vanished.
      */
-    public boolean isVanished(@NotNull Player player) {
-        for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isVanished(@NotNull Player player) {
+        return player.getMetadata("vanished").stream().anyMatch(MetadataValue::asBoolean);
     }
 
     /**
@@ -205,25 +216,7 @@ public class Checker extends BukkitRunnable {
      * @return Whether the given player is excluded.
      */
     private boolean isExcluded(@NotNull Player player) {
-        ConfigurationSection exclusions = harbor.getConfig().getConfigurationSection("exclusions");
-
-        if (exclusions == null) {
-            return false;
-        }
-
-        boolean excludedByAdventure = exclusions.getBoolean("exclude-adventure", false) && player.getGameMode() == GameMode.ADVENTURE;
-        boolean excludedByCreative = exclusions.getBoolean("exclude-creative", false) && player.getGameMode() == GameMode.CREATIVE;
-        boolean excludedBySpectator = exclusions.getBoolean("exclude-spectator", false) && player.getGameMode() == GameMode.SPECTATOR;
-        boolean excludedByPermission = exclusions.getBoolean("ignored-permission", false) && player.hasPermission("harbor.ignored");
-        boolean excludedByVanish = exclusions.getBoolean("exclude-vanished", false) && isVanished(player);
-        boolean excludedByAfk = exclusions.getBoolean("exclude-afk", false) && harbor.getPlayerManager().isAfk(player);
-
-        return excludedByAdventure
-                || excludedByCreative
-                || excludedBySpectator
-                || excludedByPermission
-                || excludedByVanish
-                || excludedByAfk;
+        return providers.stream().anyMatch(provider -> provider.isExcluded(player));
     }
 
     /**
@@ -301,5 +294,20 @@ public class Checker extends BukkitRunnable {
         } else {
             runnable.run();
         }
+    }
+
+    /**
+     * Adds an {@link ExclusionProvider}, which will be checked as a condition. All Exclusions will be ORed together
+     * on which to exclude a given player
+     */
+    public void addExclusionProvider(ExclusionProvider provider) {
+        providers.add(provider);
+    }
+
+    /**
+     * Removes an {@link ExclusionProvider}
+     */
+    public void removeExclusionProvider(ExclusionProvider provider) {
+        providers.remove(provider);
     }
 }
