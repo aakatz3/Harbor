@@ -92,4 +92,13 @@
             </resource>
         </resources>
     </build>
+
+    <!-- Required so that things can publish via github actions -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>${packagesUrl}</url>
+        </repository>
+    </distributionManagement>
 </project>
