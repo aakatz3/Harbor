@@ -14,7 +14,6 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 1.8
-          distribution: 'adopt'
       - name: Set version of project with Maven
         run: |
           # ${GITHUB_REF:10} removes the refs/tags/ from the ref
