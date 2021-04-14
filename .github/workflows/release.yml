@@ -30,6 +30,8 @@ jobs:
       - name: Upload Package
         run: |
           mvn --batch-mode deploy --file pom.xml -DpackagesUrl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

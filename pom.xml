@@ -5,7 +5,7 @@
     <groupId>xyz.nkomarn</groupId>
     <artifactId>Harbor</artifactId>
     <!-- This version is only used in local builds, and CI runnings. Release builds to packages will have the tagged version automatically set this. -->
-    <version>1.6.x-SNAPSHOT-DEV</version>
+    <version>1.6.4-DEV-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
