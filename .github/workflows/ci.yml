@@ -14,7 +14,7 @@ jobs:
           java-version: 8
           distribution: 'adopt'
       - name: Build with Maven
-        run: mvn package --file pom.xml
+        run: mvn --batch-mode package --file pom.xml
       - name: Upload Artifact
         uses: actions/upload-artifact@v2-preview
         with:

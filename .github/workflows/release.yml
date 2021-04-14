@@ -19,7 +19,7 @@ jobs:
         run: |
           # ${GITHUB_REF:10} removes the refs/tags/ from the ref
           # We then pass this to maven
-          mvn versions:set -DnewVersion=${GITHUB_REF:10}-SNAPSHOT --file pom.xml
+          mvn --batch-mode versions:set -DnewVersion=${GITHUB_REF:10}-SNAPSHOT --file pom.xml
       - name: Build with Maven
         run: mvn --batch-mode package --file pom.xml
       - name: Upload Artifact
@@ -29,7 +29,7 @@ jobs:
           path: target/Harbor-*.jar
       - name: Upload Package
         run: |
-          echo mvn --batch-mode deploy --file pom.xml -Durl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
+          mvn --batch-mode deploy --file pom.xml -Durl=https://maven.pkg.github.com/${GITHUB_REPOSITORY}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
